@@ -34,14 +34,10 @@ exports.removeProduct = async (req: any, res: any) => {
     res.send(msg_string);
 };
 
-exports.removeProduct = async (req: any, res: any) => {
+exports.showProfit = async (req: any, res: any) => {
 
-    const product_id: string = req.params.id;
-    const deleted_data = await product.findByIdAndDelete(product_id);
-
-    const msg_string: any = deleted_data
-        ? { message: "data delete sucessfull!", Deleted_data: deleted_data }
-        : { message: "No data to Delete" };
-
-    res.send(msg_string);
+    const profit: any = await product.aggregate([
+        { $project: { name: 1, _id: 0, 'total_profit': { $multiply: ['$price', '$quantity'] } } }
+    ])
+    profit.length ? res.send({ Message: "Profit of product ", profit }) : res.send({ message: "No Product to display" });
 };
