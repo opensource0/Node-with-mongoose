@@ -21,3 +21,11 @@ exports.listProduct = async (req: any, res: any) => {
     const data = await product.find();
     data.length ? res.send({ Message: "Available Product data", data }) : res.send({ message: "No Product data to display" });
 }
+
+exports.showProfit = async (req: any, res: any) => {
+
+    const profit: any = await product.aggregate([
+        { $project: { name: 1, _id: 0, 'total_profit': { $multiply: ['$price', '$quantity'] } } }
+    ])
+    profit.length ? res.send({ Message: "Profit of product ", profit }) : res.send({ message: "No Product to display" });
+};
